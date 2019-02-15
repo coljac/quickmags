@@ -6,6 +6,8 @@ import numpy as np
 import sys
 import os
 
+FLIPUD = True # Important: PNGs are inverted from fits
+
 hdu = 0
 bands_des = "griz"
 magzps_des = [30, 30, 30, 30]
@@ -53,10 +55,6 @@ def main(args):
                 f.write(",")
         f.write("\n")
 
-            # for band in bands:
-                # f.write(band + "_" + column + ",")
-        print(columns)
-                
         objids = list(mags[columns[0]].keys())
         for obj in objids:
             line = ""
@@ -75,6 +73,8 @@ def getmags(indir, bands=bands, masksdir="masks"):
         objid = mask.replace("-mask", "").split(".")[0].split("/")[-1]
         mask = np.array(Image.open(mask))
         mask = mask / 255.
+        if FLIPUD:
+            mask = np.flipud(mask)
         fits_files = glob.glob(indir + "/fits/*" + objid + "*.fits")
         mags = {}
         sb = {}
